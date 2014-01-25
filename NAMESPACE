@@ -1,0 +1,20 @@
+exportClasses(stsm)
+
+exportMethods(
+char2numeric,
+check.bounds,
+get.cpar,
+get.nopars,
+get.pars,
+set.cpar,
+set.nopars,
+set.pars,
+set.sgfc,
+show,
+transPars)
+
+export(
+stsm.model,
+stsm.sgf)
+
+importFrom(methods, setValidity)

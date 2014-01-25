@@ -1,0 +1,12 @@
+
+# evaluate the spectral likelihood function using 
+observations from 1 to [n/2] in the periodogram instead of 
+the index from 1 to n.
+
+# compute spectral generating function for the model 'trend+ar2'.
+
+# document transformation of AR coefficientes in model 'trend+ar2', 
+it is based on arima().
+
+# compute gradient and Hessian for parameterization 'tpexp10sq'
+and Hessian of transformation of AR coefficientes.

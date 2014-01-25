@@ -1,0 +1,17 @@
+bbcacc878024e6b1bc5dee52a7234df5 *DESCRIPTION
+7359a40d899e7d339c25673e9b9f2aab *NAMESPACE
+7acf879fd92387777440a1a0cd0484ec *R/frequency-domain.R
+f05470ab1e9b33898bfc906f36fb43ae *R/stsm-class.R
+cc983c6b42db1c33cb7aa3930cbe4c72 *R/stsm-methods.R
+0dff19cfd4dfe3f7b540620c2240e6b7 *R/transPars.R
+db342f00a3e938a6cbe7b60e9a206365 *inst/TODO
+0bb0fa5b802260a69ad63e8710e1c116 *man/stsm-class-package.Rd
+1f2e7e72a159d9f2fe58ec6a76fd086e *man/stsm-class.Rd
+b8dfff926b3c49fdcc943190dfeb8976 *man/stsm-methods-char2numeric.Rd
+de2e33b18748f1e787e97dfb42ddc9cc *man/stsm-methods-get.Rd
+9d81126787bf0d5e1fb2b5be7d2855db *man/stsm-methods-set.Rd
+93aed13e7076341186f4e3ab562221b5 *man/stsm-methods-transPars.Rd
+800cc9f9767371f007150f7cef452695 *man/stsm-model.Rd
+b9f76b09f930e64e8ba15442c8dbef92 *man/stsm-sgf.Rd
+6ddc3d68fefd596ef8cbc049ae308971 *man/stsm-show-methods.Rd
+9efb4e2359ae6e35ef688c0d3cfc6e7d *man/stsm-validObject.Rd
