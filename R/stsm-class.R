@@ -10,6 +10,7 @@ representation = representation(
   model = "character",
   y = "ts",
   diffy = "ts",
+  fdiff = "function",
   ss = "list",
   pars = "numeric",
   nopars = "OptionalNumeric",
@@ -44,6 +45,8 @@ stsm.model <- function(model = c("local-level", "local-trend", "BSM",
     "local-level" = 
     {
       diffy <- diff(y)
+##FIXME see a way to get "s" from the object that calls the function
+      fdiff <- function(x, s) diff(x)
       Z <- rbind(1)
       mT <- rbind(1)
       H <- paste(type, 1, sep = "")
@@ -60,6 +63,7 @@ stsm.model <- function(model = c("local-level", "local-trend", "BSM",
     "local-trend" = 
     {
       diffy <- diff(diff(y))
+      fdiff <- function(x, s) diff(diff(x))
       Z <- rbind(c(1, 0))
       mT <- rbind(c(1, 1), c(0, 1))
       H <- paste(type, 1, sep = "")
@@ -82,6 +86,7 @@ stsm.model <- function(model = c("local-level", "local-trend", "BSM",
     {
       s <- frequency(y)
       diffy <- diff(diff(y, s))
+      fdiff <- function(x, s) diff(diff(x, s))
       Z <- rbind(c(1, 0, 1, rep(0, s - 2)))
       mT <- cbind(
         cbind(c(1, rep(0, s)), c(1, 1, rep(0, s - 1))),
@@ -110,6 +115,7 @@ stsm.model <- function(model = c("local-level", "local-trend", "BSM",
     {
       s <- frequency(y)
       diffy <- diff(y, s)
+      fdiff <- function(x, s) diff(x, s)
       Z <- rbind(c(1, 1, rep(0, s - 2)))
       mT <- cbind(c(1, rep(0, s-1)),
         rbind(0, rep(-1, s-1), cbind(diag(s-2), 0)))
@@ -137,6 +143,7 @@ stsm.model <- function(model = c("local-level", "local-trend", "BSM",
     "trend+ar2" = # Clark's:87 model 
     {
       diffy <- diff(diff(y))
+      fdiff <- function(x, s) diff(diff(x))
       p <- 2
       Z <- rbind(c(1, 0, 1, rep(0, p - 1)))
       mT <- rbind(c(1, 1, rep(0, p)), c(0, 1, rep(0, p)),
@@ -223,7 +230,8 @@ stsm.model <- function(model = c("local-level", "local-trend", "BSM",
 
   # create "stsm" object
 
-  x <- new("stsm", call = match.call(), model = model, y = y, diffy = diffy, 
+  x <- new("stsm", call = match.call(), model = model, y = y, 
+    diffy = diffy, fdiff = fdiff,
     ss = ss, pars = pars, nopars = nopars, cpar = cpar, 
     lower = lb, upper = ub,
     transPars = transPars, ssd = ssd, sgfc = NULL)

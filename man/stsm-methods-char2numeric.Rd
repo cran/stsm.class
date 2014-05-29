@@ -68,7 +68,7 @@ future versions of the package.
 }
 
 \value{
-A list containing the following numeric matrices and vectors:
+A list of class \code{stsmSS} containing the following numeric matrices and vectors:
 \item{Z}{observation matrix.}
 \item{T}{transition matrix.}
 \item{H}{observation variance.}

@@ -355,7 +355,7 @@ setMethod("char2numeric", "stsm", function(x, P0cov = FALSE, rescale = FALSE)
     ss$P0 <- diag(c(allpars["P01"], allpars["P02"], 
       allpars["P03"], allpars["P04"]))
 
-  } else ##NOTE currently not used this option
+  } else ##NOTE currently this option is not used
   {
     ss$Z <- ss.fill(ss$Z, allpars, allnames)
     if (is.list(ss$T)) 
@@ -386,6 +386,7 @@ setMethod("char2numeric", "stsm", function(x, P0cov = FALSE, rescale = FALSE)
   if (P0cov)
     ss$P0[] <- ss$P0[1]
 
+  class(ss) <- "stsmSS"
   ss
 })
 

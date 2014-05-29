@@ -22,6 +22,11 @@ This class defines a structural time series model.
 \item{\code{diffy}}{Object of class \code{ts}. Differenced series \code{y}. The differencing
 operator that renders stationarity in the \code{model} is applied to the series \code{y}.}
 %
+\item{\code{fdiff}}{Object of class \code{function}. Function with arguments 
+\code{x}: a \code{ts} object, \code{s}: periodicity of the data. This function
+applies the differencing operator that renders stationarity in the \code{model} 
+to a \code{ts} object passed to it.}
+%
 \item{\code{ss}}{Object of class \code{list}. Matrices of the state space form 
 of the structural model.}
 %

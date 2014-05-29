@@ -1,0 +1,24 @@
+
+Version: 1.2 2014-05-29
+------------------------
+
+  o The list returned by method "char2numeric" is assigned a class name 
+    called "stsmSS". It is helpful for package "tsouliers" for determining 
+    whether model parameters that are passed to some functions are related 
+    to an ARIMA or a structural time series model.
+
+  o A slot named "fdiff" has been added to the "stsm" class. It is a function 
+    defining the differencing operator that renders stationarity in the selected 
+    model.
+
+Version: 1.1 2014-01-25
+------------------------
+
+  o First version on CRAN.
+
+  o 'stsm.class-Ex.R' file removed from the top-level directory.
+  
+Version: 1.0 2014-01-25
+------------------------
+
+  o First version submitted to CRAN.
