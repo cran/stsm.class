@@ -22,6 +22,8 @@ This class defines a structural time series model.
 \item{\code{diffy}}{Object of class \code{ts}. Differenced series \code{y}. The differencing
 operator that renders stationarity in the \code{model} is applied to the series \code{y}.}
 %
+\item{\code{xreg}}{An optinal matrix or numeric vector of external regressors.}
+%
 \item{\code{fdiff}}{Object of class \code{function}. Function with arguments 
 \code{x}: a \code{ts} object, \code{s}: periodicity of the data. This function
 applies the differencing operator that renders stationarity in the \code{model} 
@@ -84,6 +86,8 @@ Thus, when the slot \code{transPars} is not \code{NULL}
 \item{\code{set.pars}}{Set or modify the value of the slot \code{pars}.}
 %
 \item{\code{set.sgfc}}{Compute and set the value of the slot \code{sgfc}.}
+%
+\item{\code{set.xreg}}{Set or modify the value of the slot \code{xreg}.}
 %
 \item{\code{setValidity}}{Check the validity of the arguments passed to the function.}
 %

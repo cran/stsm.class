@@ -82,13 +82,14 @@ stsm.sgf <- function(x, gradient = FALSE, hessian = FALSE, deriv.transPars = FAL
   if (do.gr.hestpars) # hessian with transPars uses 'gr0'
   {
     pars.names <- names(pars)
-    gr <- matrix(nrow = n, ncol = p)
-    colnames(gr) <- pars.names
+    gr <- matrix(nrow = n, ncol = ncol(part))
+    colnames(gr) <- colnames(part) #pars.names
 
     ref <- pars.names %in% colnames(part)
     if (any(ref))
     {
-      gr[,ref] <- part[,pars.names[ref]]
+      id <- pars.names[ref]
+      gr[,id] <- part[,id]
     }
 
     gr0 <- gr
@@ -102,13 +103,13 @@ stsm.sgf <- function(x, gradient = FALSE, hessian = FALSE, deriv.transPars = FAL
 
 if (!x@model %in% c("cycle", "trend-cycle"))
 {
-    hes <- array(0, dim = c(n, p))
-    colnames(hes) <- names(pars)
+    hes <- array(0, dim = c(n, ncol(part)))
+    colnames(hes) <- colnames(part) #names(pars)
 
 } else #for version in development
 {
-labels <- names(pars)
-hes <- array(0, dim = c(p, p, n))
+labels <- colnames(part) #names(pars)
+hes <- array(0, dim = c(ncol(part), ncol(part), n))
 dimnames(hes)[[1]] <- dimnames(hes)[[2]] <- labels
 }
 

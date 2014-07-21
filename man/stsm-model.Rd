@@ -11,7 +11,7 @@ This is a wrapper function to constructor \code{\link[methods]{new}}.
 \usage{
 stsm.model(model = c("local-level", "local-trend", "BSM", 
   "llm+seas", "trend+ar2"),
-  y, pars = NULL, nopars = NULL, cpar = NULL, 
+  y, pars = NULL, nopars = NULL, cpar = NULL, xreg = NULL, 
   lower = NULL, upper = NULL, transPars = NULL,
   ssd = FALSE, sgfc = FALSE)
 }
@@ -27,6 +27,8 @@ stsm.model(model = c("local-level", "local-trend", "BSM",
 not included in \code{pars} and \code{cpar}.}
 %
 \item{cpar}{optional named numeric of length one. See details.}
+%
+\item{xreg}{optional matrix or numeric vector of external regressors.}
 %
 \item{lower}{optional named vector setting lower bounds to some parameters of the model. 
 The names must follow the same same labelling as \code{pars}.}

@@ -9,6 +9,8 @@
 \alias{set.pars,stsm-method}
 \alias{set.sgfc}
 \alias{set.sgfc,stsm-method}
+\alias{set.xreg}
+\alias{set.xreg,stsm-method}
 
 \title{Setter Methods for Class \code{stsm}}
 
@@ -21,6 +23,7 @@ Setter or modifier methods for objects of class \code{\link[stsm.class]{stsm}}.
 \S4method{set.nopars}{stsm}(x, v, check = TRUE, inplace = FALSE)
 \S4method{set.pars}{stsm}(x, v, check = TRUE, inplace = FALSE)
 \S4method{set.sgfc}{stsm}(x, inplace = FALSE)
+\S4method{set.xreg}{stsm}(x, xreg, coefs = NULL)
 }
 
 \arguments{
@@ -31,6 +34,14 @@ Setter or modifier methods for objects of class \code{\link[stsm.class]{stsm}}.
 consistency with the definition of the \code{stsm} object.}
 \item{inplace}{logical. If \code{TRUE}, the input object \code{x} is modified 
 in place instead of returning the whole object.}
+\item{xreg}{a matrix or numeric vector of external regressors. The number of 
+rows or length of the vector must be equal to the length of \code{x@y}. 
+If column names are specified they are used to name the parameters in 
+the slot \code{pars}.}
+\item{coefs}{an optional vector containing the value of the coefficients 
+related to the regressors \code{xreg}. If the elements of the vector do not 
+contain names they are assumed to be defined in the same order as the columns 
+in the matrix \code{xreg}.}
 }
 
 \details{
@@ -60,19 +71,26 @@ rather than modifying the contents of the slots through the \code{@<-} operator.
 See the examples below.
 %\code{set.pars{x, v}} is a safer alternative to \code{x@pars <- v}.
 
-\emph{Modifying the input object in place.}
+\emph{Modifying the input object in-place.}
 Instead of returning the whole object and create a new one or overwrite 
 the original, it is possible to modify just the desired slot in the original
 object that is passed as input. In the former case the \code{stsm} object returned by 
 the method must be assigned to another object using the usual operator \code{<-}.
 In the latter approach, the \code{stsm} object that is passed as argument is modified 
-in place. See the example below. The solution to modify an object in place is taken from 
-this \href{http://tolstoy.newcastle.edu.au/R/help/04/02/0966.html}{post}.
+in-place. See the example below. The solution to modify an object in-place is taken from 
+\href{http://tolstoy.newcastle.edu.au/R/help/04/02/0966.html}{this post}.
 This option is not a customary solution in \R, however, it seems suitable in this context. 
 The real benefit of this approach would depend on how \R deals with objects that 
 are returned from functions. If assigning the output to a new object involves making 
 copies of all the slots, then modifying the object in-place would most likely be more efficient 
 since the desired slot is directly modified avoiding copying the whole object. 
+
+After R version 3.1 this issue may become less critical. 
+One of the new features reported in the release of R 3.1 states:
+\emph{Avoid duplicating the right hand side values in complex assignments when possible. 
+This reduces copying of replacement values in expressions such as Z$a <- a0}.
+A related discussion for S4 classes can be found in 
+\href{http://stackoverflow.com/questions/22448198/does-r-copy-unevaluated-slots-in-s4-classes-on-assignment/}{this post}.
 
 \emph{Constant terms in the spectral generating function.}
 In pure variance models, some elements of the spectral generating function (s.g.f.) 
@@ -176,6 +194,26 @@ get.pars(m)
 get.pars(m)
 set.pars(m, c(11,22,33), inplace = TRUE)
 get.pars(m)
+
+# set a matrix of regressors
+xreg <- cbind(xreg1 = seq_len(84), xreg2 = c(rep(0, 40), rep(1, 44)))
+m <- stsm.model(model = "llm+seas", y = JohnsonJohnson, xreg = xreg)
+m
+# set a new matrix of regressors to an existing
+xreg3 <- seq(length(m@y))
+m2 <- set.xreg(m, xreg3)
+m2
+# remove the external regressors
+m3 <- set.xreg(m, NULL)
+m3
+m3@xreg
+# initialize the coefficients to some values
+m <- stsm.class::stsm.model(model = "llm+seas", y = JohnsonJohnson,
+  pars = c("xreg1" = 10), xreg = xreg)
+m
+m <- stsm.class::stsm.model(model = "llm+seas", y = JohnsonJohnson,
+  pars = c("xreg2" = 20, "xreg1" = 10), xreg = xreg)
+m
 }
 
 \keyword{methods}

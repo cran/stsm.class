@@ -1,0 +1,46 @@
+
+Version: 1.3 2014-07-26
+------------------------
+
+    o Added slot "xreg" to the "stsm" class. It is an optional 
+      vector or matrix contaning external regressors.
+
+    o Added argument "xreg" to function "stsm.model".
+
+    o Added method "set.xreg". 
+      In addition to place a matrix of regressors in the slot "xreg",
+      this method modifies the slot "pars" according to the 
+      column names in the matrix and create those names if they are 
+      not given. It also updates the names of the coefficients in the 
+      the element "xreg" of slot "ss".
+
+    o Renamed file "CHANGES" to "NEWS". Now this file is recognized by 
+      function "news".
+
+    o Documentation for "stsm-set-methods". The potential benetit of 
+      in-place copying may be less critical after new features in 
+      R version 3.1.
+
+Version: 1.2 2014-05-29
+------------------------
+
+  o The list returned by method "char2numeric" is assigned a class name 
+    called "stsmSS". It is helpful for package "tsouliers" for determining 
+    whether the model parameters that are passed to some functions are related 
+    to an ARIMA or a structural time series model.
+
+  o A slot named "fdiff" has been added to the "stsm" class. It is a function 
+    defining the differencing operator that renders stationarity in the selected 
+    model.
+
+Version: 1.1 2014-01-25
+------------------------
+
+  o First version on CRAN.
+
+  o 'stsm.class-Ex.R' file removed from the top-level directory.
+  
+Version: 1.0 2014-01-25
+------------------------
+
+  o First version submitted to CRAN.

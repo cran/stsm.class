@@ -149,7 +149,7 @@ setMethod("set.cpar", "stsm", function(x, value, check = TRUE, inplace = FALSE)
   if (check)
     validObject(x)
 
-  ifelse(inplace, , return(x))
+  ifelse(inplace, return(invisible()), return(x))
 })
 
 setGeneric("set.sgfc", function(x, inplace = FALSE){ 
@@ -177,6 +177,66 @@ setMethod("set.sgfc", "stsm", function(x, inplace = FALSE)
 
   } else
     stop("'set.sgfc' is not implemented for model ", sQuote(x@model), ".")
+})
+
+setGeneric("set.xreg", function(x, xreg, coefs = NULL){
+  standardGeneric("set.xreg") })
+setMethod("set.xreg", "stsm", function(x, xreg, coefs = NULL)
+{
+  ss.xreg <- x@ss$xreg
+  isnotnull.xreg <- !is.null(xreg)
+
+  if (is.null(dim(xreg)))
+  {
+    if (isnotnull.xreg)
+    {
+      xreg <- cbind(xreg = xreg)
+      x@ss$xreg <- xregnms <- "xreg"
+    } else {
+      x@ss$xreg <- NULL
+    }
+  } else {
+  if (is.null(xregnms <- colnames(xreg)))
+    xregnms <- paste("xreg", seq.int(ncol(xreg)), sep = "")
+    colnames(xreg) <- xregnms
+    x@ss$xreg <- xregnms
+  }
+
+  x@xreg <- xreg
+
+  if (!is.null(ss.xreg))
+  {
+    id <- match(ss.xreg, names(x@pars))
+    x@pars <- x@pars[-id]
+    id <- match(ss.xreg, names(x@lower))
+    x@lower <- x@lower[-id]
+    x@upper <- x@upper[-id]
+  }
+
+  # coefficients of regressors are attached to slot "pars",
+  # otherwise the regressors would be an offset and a model 
+  # without regressors could be created for y - xreg %*% xregcoefs
+
+  if (isnotnull.xreg)
+  {
+    xregcoefs <- rep(1, length(xregnms))
+    names(xregcoefs) <- xregnms
+    if (!is.null(coefs))
+    {
+      #if (any(is.na(match(names(coefs), xregnms))))
+      if (!all(names(coefs) %in% xregnms))
+        stop("some of the names in ", dQuote("coefs"), 
+          " do not match the column names in ", dQuote("xreg"), ".")
+      xregcoefs[names(coefs)] <- coefs
+    }
+
+    x@pars <- c(x@pars, xregcoefs)
+    xregcoefs[] <- Inf
+    x@upper <- c(x@upper, xregcoefs)
+    x@lower <- c(x@lower, -xregcoefs)
+  }
+
+  x
 })
 
 valid.stsmObject <- function(object)
@@ -221,6 +281,12 @@ valid.stsmObject <- function(object)
     if (any(names(object@cpar) %in% names(object@nopars)))
       stop(paste("the parameter to be concentrated out of the",
         "likelihood function is also defined in 'pars'."))
+  }
+
+  if (!is.null(object@xreg))
+  {
+    if (nrow(object@xreg) != length(object@y))
+      stop("lengths of ", sQuote("y"), " and ", sQuote("xreg"), " do not match.")
   }
 
   if (any(is.finite(c(object@lower, object@upper))))

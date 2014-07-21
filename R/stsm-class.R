@@ -3,6 +3,7 @@ setClassUnion("OptionalNumeric", c("numeric", "NULL"))
 setClassUnion("OptionalInteger", c("integer", "NULL"))
 setClassUnion("OptionalCharacterORListORFunction", c("character", "list", "function", "NULL"))
 setClassUnion("OptionalMatrix", c("matrix", "NULL"))
+setClassUnion("OptionalMatrixNumeric", c("matrix", "numeric", "NULL"))
 
 setClass(Class = "stsm", 
 representation = representation(
@@ -10,6 +11,7 @@ representation = representation(
   model = "character",
   y = "ts",
   diffy = "ts",
+  xreg = "OptionalMatrixNumeric",
   fdiff = "function",
   ss = "list",
   pars = "numeric",
@@ -24,8 +26,8 @@ representation = representation(
 
 stsm.model <- function(model = c("local-level", "local-trend", "BSM", 
   "llm+seas", "trend+ar2"),
-  y, pars = NULL, nopars = NULL, cpar = NULL, 
-  lower = NULL, upper = NULL, transPars = NULL,
+  y, pars = NULL, nopars = NULL, cpar = NULL, xreg = NULL,
+  lower = NULL, upper = NULL, transPars = NULL, 
   ssd = FALSE, sgfc = FALSE)
 {
   if (missing(y) || !is.ts(y))
@@ -33,6 +35,12 @@ stsm.model <- function(model = c("local-level", "local-trend", "BSM",
   
   if (any(duplicated(c(names(pars), names(nopars), names(cpar)))))
     stop("duplicated parameters passed through 'pars', 'nopars' and 'cpar'")
+
+  if (!is.null(xreg))
+  {
+    if (NROW(xreg) != length(y))
+      stop("lengths of ", sQuote("y"), " and ", sQuote("xreg"), " do not match.")
+  }
 
   model <- match.arg(model)
   type <- "var"
@@ -175,10 +183,27 @@ stsm.model <- function(model = c("local-level", "local-trend", "BSM",
 
   if (!is.null(pars))
   {
+    # na.omit necessary in the presence of "xreg" cofficients
     ref <- match(names(pars), names(allpars0))
+    id <- which(is.na(ref))
+    lid <- length(id) 
+    if (lid > 0) {
+      xregcoefs <- pars[id]
+      pars <- pars[-id]
+      if (length(pars) == 0)
+        pars <- NULL
+    } else
+      xregcoefs <- NULL
+    ref <- na.omit(ref)
     if (length(ref) > 0)
       allpars0 <- allpars0[-ref]
-  } else {
+  } else 
+    xregcoefs <- NULL
+
+  # do not use "else" because it depends on the previous "if" statement
+  #else { 
+  if (is.null(pars))
+  {
     ref <- match(names(nopars), names(pars0))
     if (length(ref) > 0) {
       pars <- pars0[-ref]
@@ -231,7 +256,7 @@ stsm.model <- function(model = c("local-level", "local-trend", "BSM",
   # create "stsm" object
 
   x <- new("stsm", call = match.call(), model = model, y = y, 
-    diffy = diffy, fdiff = fdiff,
+    diffy = diffy, xreg = NULL, fdiff = fdiff,
     ss = ss, pars = pars, nopars = nopars, cpar = cpar, 
     lower = lb, upper = ub,
     transPars = transPars, ssd = ssd, sgfc = NULL)
@@ -240,6 +265,11 @@ stsm.model <- function(model = c("local-level", "local-trend", "BSM",
 
   if (sgfc)
     x@sgfc <- stsm.sgf(x, FALSE, FALSE, FALSE)$constants
+
+  # external regressors
+
+  if (!is.null(xreg))
+    x <- set.xreg(x, xreg, xregcoefs)
 
   x
 }
